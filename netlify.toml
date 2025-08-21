@@ -1,0 +1,17 @@
+[build]
+  command = "pip install -r requirements.txt --target ./python" # 构建命令：安装依赖
+  functions = "netlify/functions" # Netlify Functions 代码所在目录
+  publish = "." # 因为我们没有静态文件要发布，可以设为当前目录或其他任意目录
+
+# 重定向配置，非常重要！
+# 它将所有请求（除了已存在的静态文件）都代理给你的 Flask 函数，
+# 让你的网站看起来像是在运行一个传统的服务器，而不是在 `/api` 路径下。
+[[redirects]]
+  from = "/*"
+  to = "/.netlify/functions/app"
+  status = 200
+
+[[redirects]]
+  from = "/.netlify/functions/app/*"
+  to = "/.netlify/functions/app/:splat" # 确保函数内部的路径正常工作
+  status = 200
